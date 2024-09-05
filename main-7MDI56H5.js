@@ -17051,7 +17051,7 @@ var X2 = {
   WeatherApiForecastBAseUrl:
     "https://weather338.p.rapidapi.com/weather/forecast?",
   xRapidApiKeyName: "X-RapidAPI-Key",
-  xRapidApikeyValue: "d682b79bddmsh2c716f0d6080d5ap18af2djsn84287914dfe8",
+  xRapidApikeyValue: "09951f7677msh2ade80c0ccdba94p13ef99jsn222c7ddbb16f",
   xRapidApiHostName: "X-RapidAPI-Host",
   xRapidApiHostValue: "weather338.p.rapidapi.com",
 };
