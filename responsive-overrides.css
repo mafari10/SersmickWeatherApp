@@ -36,19 +36,23 @@ body {
 /* Large screens: keep two-column desktop layout with a controlled max width */
 @media (min-width: 1201px) {
   body {
-    padding: 24px;
+    padding: 20px 24px;
   }
 
   .app-container {
-    align-items: center !important;
+    height: auto !important;
+    min-height: calc(100dvh - 40px);
+    align-items: flex-start !important;
     justify-content: center !important;
   }
 
   .weather-container {
     width: min(92vw, 1400px) !important;
-    height: min(90vh, 920px) !important;
-    max-height: 920px;
+    min-height: calc(100dvh - 40px);
+    height: auto !important;
+    max-height: none;
     border-radius: 30px !important;
+    overflow: hidden;
   }
 
   .left-container,
@@ -58,6 +62,37 @@ body {
 
   .right-container {
     overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .right-container-data-box {
+    margin: 12px !important;
+  }
+
+  .right-container-week-cards {
+    gap: 8px;
+    flex-wrap: wrap !important;
+  }
+
+  .cards {
+    margin-right: 0 !important;
+  }
+
+  .right-container-today-highlight-title {
+    margin: 18px 12px 10px !important;
+    padding-top: 0 !important;
+  }
+
+  .right-container-today-highlight-cards {
+    gap: 12px;
+    flex-wrap: wrap !important;
+    align-items: stretch;
+  }
+
+  .right-container-today-highlight-card {
+    height: auto !important;
+    min-height: 180px;
+    margin: 0 !important;
   }
 }
 
