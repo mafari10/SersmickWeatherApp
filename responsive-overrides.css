@@ -1,0 +1,301 @@
+/* Responsive overrides for the built weather app.
+   This file is loaded after the generated bundle CSS. */
+
+/* Base behavior for all screens */
+html,
+body {
+  width: 100%;
+  min-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  display: block !important;
+  overflow-x: hidden;
+}
+
+body {
+  background: #d6d7da;
+  box-sizing: border-box;
+}
+
+.app-container {
+  width: 100% !important;
+  min-height: 100dvh;
+  box-sizing: border-box;
+}
+
+.weather-container {
+  box-sizing: border-box;
+}
+
+.right-container-week-cards,
+.right-container-today-cards,
+.right-container-today-highlight-cards {
+  gap: 10px;
+}
+
+/* Large screens: keep two-column desktop layout with a controlled max width */
+@media (min-width: 1201px) {
+  body {
+    padding: 24px;
+  }
+
+  .app-container {
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .weather-container {
+    width: min(92vw, 1400px) !important;
+    height: min(90vh, 920px) !important;
+    max-height: 920px;
+    border-radius: 30px !important;
+  }
+
+  .left-container,
+  .right-container {
+    min-height: 0;
+  }
+
+  .right-container {
+    overflow-y: auto;
+  }
+}
+
+/* Medium screens: stack sections and keep comfortable spacing */
+@media (min-width: 768px) and (max-width: 1200px) {
+  body {
+    padding: 16px;
+  }
+
+  .app-container {
+    height: auto !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+  }
+
+  .weather-container {
+    width: 100% !important;
+    min-height: calc(100dvh - 32px);
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    border-radius: 20px !important;
+    overflow: hidden;
+  }
+
+  .left-container,
+  .right-container {
+    width: 100% !important;
+    border-radius: 0 !important;
+  }
+
+  .left-container-data-box {
+    margin: 16px 24px !important;
+  }
+
+  .right-container-nav-bar {
+    padding: 10px 18px;
+    flex-wrap: wrap !important;
+    gap: 10px;
+  }
+
+  .right-container-data-box {
+    margin: 12px !important;
+  }
+
+  .right-container-week-cards,
+  .right-container-today-cards {
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+  }
+
+  .cards {
+    margin-right: 0 !important;
+  }
+
+  .right-container-today-highlight-title {
+    margin: 16px 12px 8px !important;
+    padding-top: 0 !important;
+  }
+
+  .right-container-today-highlight-cards {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+    padding: 0 12px 16px;
+    align-items: stretch;
+  }
+
+  .right-container-today-highlight-card {
+    width: 100% !important;
+    min-height: 170px;
+    height: auto !important;
+    margin: 0 !important;
+  }
+}
+
+/* Small screens: mobile-first stacked layout */
+@media (max-width: 767px) {
+  body {
+    padding: 0;
+  }
+
+  .app-container {
+    height: auto !important;
+    min-height: 100dvh;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+  }
+
+  .weather-container {
+    width: 100% !important;
+    min-height: 100dvh;
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    border-radius: 0 !important;
+    overflow: hidden;
+  }
+
+  .left-container,
+  .right-container {
+    width: 100% !important;
+    border-radius: 0 !important;
+  }
+
+  .left-container-nav-bar {
+    padding: 14px 12px !important;
+    margin: 0 !important;
+    gap: 8px;
+    flex-wrap: nowrap !important;
+  }
+
+  .search-icon,
+  .location-icon {
+    flex: 0 0 auto !important;
+  }
+
+  .search-input {
+    flex: 1 1 auto !important;
+  }
+
+  .search-input input {
+    font-size: 14px !important;
+    padding: 10px 12px !important;
+  }
+
+  .left-container-data-box {
+    margin: 10px 12px 20px !important;
+  }
+
+  .left-container-temp-img img {
+    width: 140px !important;
+    height: 140px !important;
+  }
+
+  .left-container-temp-value {
+    font-size: 48px !important;
+  }
+
+  .left-container-temp-value sup {
+    font-size: 26px !important;
+  }
+
+  .left-container-day-time {
+    font-size: 14px !important;
+  }
+
+  .left-container-location-img {
+    margin-top: 0 !important;
+    text-align: center;
+  }
+
+  .left-container-location-img img {
+    width: 100% !important;
+    max-width: 280px;
+    height: auto !important;
+  }
+
+  .left-container-location-name {
+    position: static !important;
+    display: block;
+    margin-top: 8px;
+    text-align: center;
+  }
+
+  .right-container-nav-bar {
+    padding: 12px !important;
+    gap: 8px;
+    flex-wrap: wrap !important;
+  }
+
+  .nav-bar-tabs {
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  .nav-bar-metric {
+    margin-right: 0 !important;
+  }
+
+  .profile-image img {
+    margin: 0 !important;
+  }
+
+  .right-container-data-box {
+    margin: 8px 10px !important;
+  }
+
+  .right-container-week-cards,
+  .right-container-today-cards {
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+  }
+
+  .cards {
+    width: calc(50% - 8px) !important;
+    min-width: 136px;
+    max-width: 180px;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 8px 4px;
+  }
+
+  .card-temp-img img {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .right-container-today-highlight-title {
+    margin: 14px 10px 8px !important;
+    font-size: 16px !important;
+    padding-top: 0 !important;
+  }
+
+  .right-container-today-highlight-cards {
+    display: grid !important;
+    grid-template-columns: 1fr;
+    padding: 0 10px 14px;
+    align-items: stretch;
+  }
+
+  .right-container-today-highlight-card {
+    width: 100% !important;
+    min-height: 160px;
+    height: auto !important;
+    margin: 0 !important;
+  }
+
+  .right-container-today-highlight-card-title {
+    margin-left: 16px !important;
+  }
+
+  .wind-status-value {
+    font-size: 34px !important;
+  }
+
+  .sunrise-img img,
+  .sunset-img img {
+    width: 42px !important;
+    height: 42px !important;
+  }
+}
