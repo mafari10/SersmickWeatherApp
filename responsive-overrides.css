@@ -1,231 +1,312 @@
-/* Responsive overrides for the built weather app.
-   This file is loaded after the generated bundle CSS. */
+/* Professional responsive overrides for built Angular weather app.
+   Loaded after generated bundle CSS. */
 
-/* Base behavior for all screens */
+:root {
+  --app-bg: #cfd0d4;
+  --panel-bg: #f2f3f6;
+  --card-bg: #f8f9fc;
+  --text: #151515;
+  --muted: #9aa0aa;
+  --radius-xl: 30px;
+  --radius-lg: 18px;
+  --shadow-soft: 0 10px 28px rgba(20, 24, 40, 0.07);
+  --shadow-card: 0 8px 22px rgba(20, 24, 40, 0.06);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html,
 body {
   width: 100%;
   min-height: 100dvh;
   margin: 0;
   padding: 0;
-  display: block !important;
   overflow-x: hidden;
 }
 
 body {
-  background: #d6d7da;
-  box-sizing: border-box;
+  display: block !important;
+  background: var(--app-bg) !important;
+  color: var(--text);
+  font-family: Open Sans, sans-serif;
 }
 
 .app-container {
   width: 100% !important;
   min-height: 100dvh;
-  box-sizing: border-box;
+  padding: 20px 24px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 .weather-container {
-  box-sizing: border-box;
+  width: min(1400px, 100%) !important;
+  min-height: calc(100dvh - 40px);
+  background: var(--panel-bg) !important;
+  border-radius: var(--radius-xl) !important;
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+}
+
+.left-container,
+.right-container {
+  background: var(--panel-bg) !important;
+}
+
+.search-input input {
+  background: #eef0f4 !important;
+  box-shadow: inset 0 1px 2px rgba(20, 24, 40, 0.05);
+}
+
+.cards,
+.right-container-today-highlight-card {
+  background: var(--card-bg) !important;
+  box-shadow: var(--shadow-card);
+}
+
+.right-container,
+.right-container-today-highlight,
+.right-container-data-box {
+  align-items: stretch !important;
 }
 
 .right-container-week-cards,
 .right-container-today-cards,
 .right-container-today-highlight-cards {
-  gap: 10px;
+  gap: 12px;
 }
 
-/* Large screens: keep two-column desktop layout with a controlled max width */
+/* =========================
+   Desktop
+   ========================= */
 @media (min-width: 1201px) {
-  body {
-    padding: 20px 24px;
-  }
-
   .app-container {
-    height: auto !important;
-    min-height: calc(100dvh - 40px);
-    align-items: flex-start !important;
-    justify-content: center !important;
+    min-height: 100dvh;
   }
 
   .weather-container {
-    width: min(92vw, 1400px) !important;
-    min-height: calc(100dvh - 40px);
-    height: auto !important;
-    max-height: none;
-    border-radius: 30px !important;
-    overflow: hidden;
+    display: grid !important;
+    grid-template-columns: minmax(300px, 330px) minmax(0, 1fr);
   }
 
-  .left-container,
-  .right-container {
-    min-height: 0;
+  .left-container {
+    border-right: 1px solid rgba(24, 30, 52, 0.07);
+    border-radius: var(--radius-xl) 0 0 var(--radius-xl) !important;
+    overflow-y: auto;
   }
 
   .right-container {
+    border-radius: 0 var(--radius-xl) var(--radius-xl) 0 !important;
     overflow-y: auto;
     overflow-x: hidden;
-  }
-
-  .right-container-data-box {
-    margin: 12px !important;
-  }
-
-  .right-container-week-cards {
-    gap: 8px;
-    flex-wrap: wrap !important;
-  }
-
-  .cards {
-    margin-right: 0 !important;
-  }
-
-  .right-container-today-highlight-title {
-    margin: 18px 12px 10px !important;
-    padding-top: 0 !important;
-  }
-  .app-container .right-container .right-container-today-highlight-title {
-    margin: 18px 12px 10px !important;
-    padding-top: 0 !important;
-  }
-
-  .right-container-today-highlight-cards {
-    gap: 12px;
-    flex-wrap: wrap !important;
-    align-items: stretch;
-  }
-  .app-container .right-container .right-container-today-highlight-cards {
-    gap: 12px !important;
-    flex-wrap: wrap !important;
     align-items: stretch !important;
   }
 
-  .right-container-today-highlight-card {
-    height: auto !important;
-    min-height: 180px;
-    margin: 0 !important;
-  }
-  .app-container .right-container .right-container-today-highlight-card {
-    width: calc(33.333% - 8px) !important;
-    min-width: 220px;
-    height: auto !important;
-    min-height: 180px;
-    margin: 0 !important;
-  }
-}
-
-/* Medium screens: stack sections and keep comfortable spacing */
-@media (min-width: 768px) and (max-width: 1200px) {
-  body {
-    padding: 16px;
-  }
-
-  .app-container {
-    height: auto !important;
-    align-items: stretch !important;
-    justify-content: flex-start !important;
-  }
-
-  .weather-container {
-    width: 100% !important;
-    min-height: calc(100dvh - 32px);
-    height: auto !important;
-    display: flex !important;
-    flex-direction: column !important;
-    border-radius: 20px !important;
-    overflow: hidden;
-  }
-
-  .left-container,
-  .right-container {
-    width: 100% !important;
-    border-radius: 0 !important;
+  .left-container-nav-bar {
+    margin: 18px 0 6px !important;
+    padding: 0 18px;
   }
 
   .left-container-data-box {
-    margin: 16px 24px !important;
+    margin: 8px 20px 20px !important;
   }
 
   .right-container-nav-bar {
-    padding: 10px 18px;
-    flex-wrap: wrap !important;
+    margin-top: 0 !important;
+    padding: 16px 18px 8px;
     gap: 10px;
   }
 
   .right-container-data-box {
-    margin: 12px !important;
+    margin: 4px 18px 20px !important;
   }
 
-  .right-container-week-cards,
-  .right-container-today-cards {
-    justify-content: center !important;
-    flex-wrap: wrap !important;
+  .right-container-week-cards {
+    display: grid !important;
+    grid-template-columns: repeat(7, minmax(92px, 1fr));
+    align-items: stretch;
+    justify-items: stretch;
   }
 
   .cards {
-    margin-right: 0 !important;
+    width: auto !important;
+    height: 138px !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 
   .right-container-today-highlight-title {
-    margin: 16px 12px 8px !important;
-    padding-top: 0 !important;
-  }
-  .app-container .right-container .right-container-today-highlight-title {
-    margin: 16px 12px 8px !important;
+    margin: 16px 6px 12px !important;
     padding-top: 0 !important;
   }
 
   .right-container-today-highlight-cards {
     display: grid !important;
-    grid-template-columns: repeat(2, minmax(220px, 1fr));
-    padding: 0 12px 16px;
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
     align-items: stretch;
   }
 
   .right-container-today-highlight-card {
     width: 100% !important;
-    min-height: 170px;
+    min-height: 192px;
     height: auto !important;
     margin: 0 !important;
   }
-  .app-container .right-container .right-container-today-highlight-card {
-    width: 100% !important;
-    min-height: 170px;
-    height: auto !important;
-    margin: 0 !important;
+
+  .right-container-today-highlight-card-title {
+    margin: 16px 18px 0 !important;
+    align-self: flex-start;
   }
 }
 
-/* Small screens: mobile-first stacked layout */
-@media (max-width: 767px) {
-  body {
-    padding: 0;
-  }
-
+/* =========================
+   Tablet / Medium
+   ========================= */
+@media (min-width: 768px) and (max-width: 1200px) {
   .app-container {
-    height: auto !important;
-    min-height: 100dvh;
+    padding: 12px;
     align-items: stretch !important;
     justify-content: flex-start !important;
   }
 
   .weather-container {
+    display: grid !important;
+    grid-template-columns: minmax(250px, 280px) minmax(0, 1fr);
+    min-height: calc(100dvh - 24px);
+    border-radius: 22px !important;
+  }
+
+  .left-container {
+    border-right: 1px solid rgba(24, 30, 52, 0.07);
+    border-radius: 22px 0 0 22px !important;
+    overflow-y: auto;
+  }
+
+  .right-container {
+    border-radius: 0 22px 22px 0 !important;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .left-container-nav-bar {
+    margin: 12px 0 4px !important;
+    padding: 0 10px;
+  }
+
+  .left-container-data-box {
+    margin: 8px 12px 16px !important;
+  }
+
+  .left-container-temp-img img {
+    width: 140px !important;
+    height: 140px !important;
+  }
+
+  .left-container-temp-value {
+    font-size: 52px !important;
+  }
+
+  .left-container-temp-value sup {
+    font-size: 30px !important;
+  }
+
+  .right-container-nav-bar {
+    margin-top: 0 !important;
+    padding: 12px 12px 8px;
+    gap: 10px;
+    flex-wrap: wrap !important;
+  }
+
+  .nav-bar-tabs {
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  .nav-bar-metric {
+    margin-right: 0 !important;
+  }
+
+  .profile-image img {
+    margin: 0 !important;
+  }
+
+  .right-container-data-box {
+    margin: 4px 12px 14px !important;
+  }
+
+  .right-container-week-cards {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(95px, 1fr));
+    align-items: stretch;
+  }
+
+  .cards {
+    width: auto !important;
+    height: 124px !important;
+    margin: 0 !important;
+  }
+
+  .right-container-today-highlight-title {
+    margin: 14px 6px 10px !important;
+    padding-top: 0 !important;
+    font-size: 24px;
+  }
+
+  .right-container-today-highlight-cards {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
+    align-items: stretch;
+  }
+
+  .right-container-today-highlight-card {
     width: 100% !important;
-    min-height: 100dvh;
+    min-height: 178px;
     height: auto !important;
+    margin: 0 !important;
+  }
+
+  .right-container-today-highlight-card-title {
+    margin: 14px 16px 0 !important;
+    align-self: flex-start;
+  }
+}
+
+/* =========================
+   Mobile / Small
+   ========================= */
+@media (max-width: 767px) {
+  .app-container {
+    padding: 0;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+  }
+
+  .weather-container {
     display: flex !important;
     flex-direction: column !important;
+    width: 100% !important;
+    min-height: 100dvh;
     border-radius: 0 !important;
-    overflow: hidden;
   }
 
   .left-container,
   .right-container {
     width: 100% !important;
     border-radius: 0 !important;
+    overflow: visible;
   }
 
   .left-container-nav-bar {
-    padding: 14px 12px !important;
     margin: 0 !important;
+    padding: 12px 10px 6px !important;
     gap: 8px;
     flex-wrap: nowrap !important;
   }
@@ -245,12 +326,12 @@ body {
   }
 
   .left-container-data-box {
-    margin: 10px 12px 20px !important;
+    margin: 6px 10px 14px !important;
   }
 
   .left-container-temp-img img {
-    width: 140px !important;
-    height: 140px !important;
+    width: 130px !important;
+    height: 130px !important;
   }
 
   .left-container-temp-value {
@@ -284,7 +365,8 @@ body {
   }
 
   .right-container-nav-bar {
-    padding: 12px !important;
+    margin-top: 0 !important;
+    padding: 10px !important;
     gap: 8px;
     flex-wrap: wrap !important;
   }
@@ -303,19 +385,18 @@ body {
   }
 
   .right-container-data-box {
-    margin: 8px 10px !important;
+    margin: 2px 10px 14px !important;
   }
 
-  .right-container-week-cards,
-  .right-container-today-cards {
-    justify-content: center !important;
-    flex-wrap: wrap !important;
+  .right-container-week-cards {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    align-items: stretch;
   }
 
   .cards {
-    width: calc(50% - 8px) !important;
-    min-width: 136px;
-    max-width: 180px;
+    width: auto !important;
+    min-height: 112px;
     height: auto !important;
     margin: 0 !important;
     padding: 8px 4px;
@@ -327,38 +408,27 @@ body {
   }
 
   .right-container-today-highlight-title {
-    margin: 14px 10px 8px !important;
-    font-size: 16px !important;
-    padding-top: 0 !important;
-  }
-  .app-container .right-container .right-container-today-highlight-title {
-    margin: 14px 10px 8px !important;
-    font-size: 16px !important;
+    margin: 14px 6px 10px !important;
+    font-size: 30px;
     padding-top: 0 !important;
   }
 
   .right-container-today-highlight-cards {
     display: grid !important;
     grid-template-columns: 1fr;
-    padding: 0 10px 14px;
     align-items: stretch;
   }
 
   .right-container-today-highlight-card {
     width: 100% !important;
-    min-height: 160px;
-    height: auto !important;
-    margin: 0 !important;
-  }
-  .app-container .right-container .right-container-today-highlight-card {
-    width: 100% !important;
-    min-height: 160px;
+    min-height: 165px;
     height: auto !important;
     margin: 0 !important;
   }
 
   .right-container-today-highlight-card-title {
-    margin-left: 16px !important;
+    margin: 14px 16px 0 !important;
+    align-self: flex-start;
   }
 
   .wind-status-value {
