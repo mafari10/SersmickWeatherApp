@@ -17063,7 +17063,7 @@ var v3 = (() => {
         (this.isloading$ = this.isloadingSubject.asObservable()),
         (this.todayData = []),
         (this.weekData = []),
-        (this.cityName = "Li\xE8ge"),
+        (this.cityName = "Deinze"),
         (this.language = "en-US"),
         (this.date = "20200622"),
         (this.units = "m"),
