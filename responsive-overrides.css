@@ -82,14 +82,30 @@ body {
     margin: 18px 12px 10px !important;
     padding-top: 0 !important;
   }
+  .app-container .right-container .right-container-today-highlight-title {
+    margin: 18px 12px 10px !important;
+    padding-top: 0 !important;
+  }
 
   .right-container-today-highlight-cards {
     gap: 12px;
     flex-wrap: wrap !important;
     align-items: stretch;
   }
+  .app-container .right-container .right-container-today-highlight-cards {
+    gap: 12px !important;
+    flex-wrap: wrap !important;
+    align-items: stretch !important;
+  }
 
   .right-container-today-highlight-card {
+    height: auto !important;
+    min-height: 180px;
+    margin: 0 !important;
+  }
+  .app-container .right-container .right-container-today-highlight-card {
+    width: calc(33.333% - 8px) !important;
+    min-width: 220px;
     height: auto !important;
     min-height: 180px;
     margin: 0 !important;
@@ -152,6 +168,10 @@ body {
     margin: 16px 12px 8px !important;
     padding-top: 0 !important;
   }
+  .app-container .right-container .right-container-today-highlight-title {
+    margin: 16px 12px 8px !important;
+    padding-top: 0 !important;
+  }
 
   .right-container-today-highlight-cards {
     display: grid !important;
@@ -161,6 +181,12 @@ body {
   }
 
   .right-container-today-highlight-card {
+    width: 100% !important;
+    min-height: 170px;
+    height: auto !important;
+    margin: 0 !important;
+  }
+  .app-container .right-container .right-container-today-highlight-card {
     width: 100% !important;
     min-height: 170px;
     height: auto !important;
@@ -305,6 +331,11 @@ body {
     font-size: 16px !important;
     padding-top: 0 !important;
   }
+  .app-container .right-container .right-container-today-highlight-title {
+    margin: 14px 10px 8px !important;
+    font-size: 16px !important;
+    padding-top: 0 !important;
+  }
 
   .right-container-today-highlight-cards {
     display: grid !important;
@@ -314,6 +345,12 @@ body {
   }
 
   .right-container-today-highlight-card {
+    width: 100% !important;
+    min-height: 160px;
+    height: auto !important;
+    margin: 0 !important;
+  }
+  .app-container .right-container .right-container-today-highlight-card {
     width: 100% !important;
     min-height: 160px;
     height: auto !important;
