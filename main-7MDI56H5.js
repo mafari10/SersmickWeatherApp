@@ -17044,16 +17044,22 @@ var $n = class {};
 var Wn = class {};
 var qn = class {};
 var Gn = class {};
+var sersmickWeatherConfig = globalThis.__SERSMICK_WEATHER_CONFIG__ || {};
 var X2 = {
   production: !1,
   WeatherApiLocationBAseUrl:
+    sersmickWeatherConfig.locationBaseUrl ||
     "https://weather338.p.rapidapi.com/locations/search?",
   WeatherApiForecastBAseUrl:
+    sersmickWeatherConfig.forecastBaseUrl ||
     "https://weather338.p.rapidapi.com/weather/forecast?",
   xRapidApiKeyName: "X-RapidAPI-Key",
-  xRapidApikeyValue: "09951f7677msh2ade80c0ccdba94p13ef99jsn222c7ddbb16f",
+  xRapidApikeyValue:
+    sersmickWeatherConfig.rapidApiKey ||
+    "09951f7677msh2ade80c0ccdba94p13ef99jsn222c7ddbb16f",
   xRapidApiHostName: "X-RapidAPI-Host",
-  xRapidApiHostValue: "weather338.p.rapidapi.com",
+  xRapidApiHostValue:
+    sersmickWeatherConfig.rapidApiHost || "weather338.p.rapidapi.com",
 };
 var v3 = (() => {
   let t = class t {
@@ -17065,13 +17071,20 @@ var v3 = (() => {
         (this.weekData = []),
         (this.cityName = "Deinze"),
         (this.language = "en-US"),
-        (this.date = "20200622"),
+        (this.date = this.getCurrentDateParam()),
         (this.units = "m"),
         (this.today = !1),
         (this.week = !0),
         (this.celsius = !0),
         (this.fahrenheit = !1),
         this.getData();
+    }
+    getCurrentDateParam() {
+      let n = new Date();
+      return `${n.getFullYear()}${String(n.getMonth() + 1).padStart(
+        2,
+        "0"
+      )}${String(n.getDate()).padStart(2, "0")}`;
     }
     getSummaryImage(n) {
       let c = "assets/",
@@ -17080,35 +17093,45 @@ var v3 = (() => {
         o = "wind.gif",
         s = "sun.gif",
         l = "rain.gif",
-        f = "snow.gif";
-      return String(n).includes("Partly Cloudy") ||
-        String(n).includes("P Cloudy")
+        f = "snowflake.gif",
+        u = "storm.gif",
+        h = String(n || "").toLowerCase();
+      return h.includes("thunder") || h.includes("storm")
+        ? c + u
+        : h.includes("partly cloudy") ||
+          h.includes("p cloudy") ||
+          h.includes("cloudy") ||
+          h.includes("overcast")
         ? c + i
-        : String(n).includes("Partly Rainy") || String(n).includes("P Rainy")
+        : h.includes("partly rainy") ||
+          h.includes("p rainy") ||
+          h.includes("showers") ||
+          h.includes("drizzle")
         ? c + a
-        : String(n).includes("wind")
+        : h.includes("wind")
         ? c + o
-        : String(n).includes("rain")
+        : h.includes("rain")
         ? c + l
-        : String(n).includes("snowy") || String(n).includes("snow")
+        : h.includes("snowy") ||
+          h.includes("snow") ||
+          h.includes("sleet") ||
+          h.includes("ice")
         ? c + f
         : c + s;
     }
     fillTemperatureDataModel() {
-      (this.currentTime = new Date()),
-        (this.temperatureData.day =
+      (this.temperatureData.day =
           this.ForecastData["v3-wx-observations-current"].dayOfWeek),
-        (this.temperatureData.time = `${String(
-          this.currentTime.getHours()
-        ).padStart(2, "0")}:${String(this.currentTime.getMinutes()).padStart(
-          2,
-          "0"
-        )}`),
+        (this.temperatureData.time = this.getTimeFromString(
+          this.ForecastData["v3-wx-observations-current"].validTimeLocal
+        )),
         (this.temperatureData.temperature =
           this.ForecastData["v3-wx-observations-current"].temperature),
-        (this.temperatureData.location = `${this.locationData.location.city[0]},${this.locationData.location.country[0]}`),
+        (this.temperatureData.location = `${this.locationData.location.city[0]}, ${this.locationData.location.country[0]}`),
         (this.temperatureData.rainPercent =
-          this.ForecastData["v3-wx-observations-current"].precip24Hour),
+          this.ForecastData["v3-wx-forecast-hourly-10day"].precipChance?.[0] ??
+          this.ForecastData["v3-wx-observations-current"].precip24Hour ??
+          0),
         (this.temperatureData.summaryPhrase =
           this.ForecastData["v3-wx-observations-current"].wxPhraseShort),
         (this.temperatureData.summaryImage = this.getSummaryImage(
@@ -17146,7 +17169,16 @@ var v3 = (() => {
           ));
     }
     getTimeFromString(n) {
-      return n.slice(11, 16);
+      let c = String(n || "").slice(11, 16);
+      if (!c.includes(":")) return "";
+      let [i, a] = c.split(":").map((o) => Number(o));
+      if (Number.isNaN(i) || Number.isNaN(a)) return c;
+      let o = i >= 12 ? "PM" : "AM",
+        s = i % 12 || 12;
+      return `${String(s).padStart(2, "0")}:${String(a).padStart(
+        2,
+        "0"
+      )} ${o}`;
     }
     fillTodaysHighlight() {
       (this.TodaysHighlights.airQuality =
@@ -17172,12 +17204,7 @@ var v3 = (() => {
       this.fillTemperatureDataModel(),
         this.fillWeekData(),
         this.fillTodayData(),
-        this.fillTodaysHighlight(),
-        console.log(this.ForecastData),
-        console.log(this.temperatureData),
-        console.log(this.weekData),
-        console.log(this.todayData),
-        console.log(this.TodaysHighlights);
+        this.fillTodaysHighlight();
     }
     celsiusToFahrenheit(n) {
       return +(n * 1.8 + 32).toFixed(2);
@@ -17206,29 +17233,39 @@ var v3 = (() => {
           .set("units", o),
       });
     }
-    getData() {
+    getData(n = this.cityName) {
       this.isloadingSubject.next(!0),
-        (this.todayData = []),
-        (this.weekData = []),
-        (this.temperatureData = new $n()),
-        (this.TodaysHighlights = new Gn());
-      var n = 0,
-        c = 0;
-      this.getLocationData(this.cityName, this.language).subscribe({
-        next: (i) => {
-          (this.locationData = i),
-            (n = this.locationData.location.latitude[0]),
-            (c = this.locationData.location.longitude[0]),
-            console.log(this.locationData),
+        (this.date = this.getCurrentDateParam());
+      let c = String(n || "").trim() || "Deinze";
+      var i = 0,
+        a = 0;
+      this.getLocationData(c, this.language).subscribe({
+        next: (o) => {
+          if (
+            !o?.location?.latitude?.length ||
+            !o?.location?.longitude?.length ||
+            !o?.location?.city?.length
+          ) {
+            this.isloadingSubject.next(!1);
+            return;
+          }
+          (this.locationData = o),
+            (this.cityName = this.locationData.location.city[0] || c),
+            (i = this.locationData.location.latitude[0]),
+            (a = this.locationData.location.longitude[0]),
             this.getWeatherReport(
               this.date,
-              n,
-              c,
+              i,
+              a,
               this.language,
               this.units
             ).subscribe({
-              next: (a) => {
-                (this.ForecastData = a),
+              next: (s) => {
+                (this.ForecastData = s),
+                  (this.todayData = []),
+                  (this.weekData = []),
+                  (this.temperatureData = new $n()),
+                  (this.TodaysHighlights = new Gn()),
                   this.prepareData(),
                   this.isloadingSubject.next(!1);
               },
@@ -17260,7 +17297,8 @@ var v7 = (() => {
         (this.weatherService = m(v3));
     }
     onSearch(n) {
-      (this.weatherService.cityName = n), this.weatherService.getData();
+      let c = String(n || "").trim();
+      c && this.weatherService.getData(c);
     }
   };
   (t.ɵfac = function (c) {
@@ -17398,13 +17436,13 @@ var v7 = (() => {
           N(3),
           r2("icon", i.faCloudRain),
           N(2),
-          h2("Rain - ", i.weatherService.temperatureData.rainPercent, " %"),
+          h2("Rain chance - ", i.weatherService.temperatureData.rainPercent, " %"),
           N(5),
           H1(i.weatherService.temperatureData.location));
       },
       dependencies: [Un, jn, ve],
       styles: [
-        "@media only screen and (max-width: 1240px){.left-container-other-details[_ngcontent-%COMP%]{flex:5!important;display:flex;flex-direction:column;justify-content:center;align-items:center}.right-container-today-highlight-title[_ngcontent-%COMP%]{flex:2;margin-top:3px!important;margin-left:36px!important;font-size:18px;font-weight:700;padding-top:-25px}.right-container-today-cards[_ngcontent-%COMP%]{flex:1;display:flex;flex-direction:row;justify-content:center;align-items:center;flex-wrap:wrap}.right-container-nav-bar[_ngcontent-%COMP%]{flex:1;display:flex;flex-direction:row;justify-content:space-between;align-items:center;font-size:small;font-weight:700;flex-wrap:wrap;margin-top:10px}.left-container-nav-bar[_ngcontent-%COMP%]{flex:2;display:flex;flex-direction:row;justify-content:center;align-items:center;margin:30px 0!important}}@media only screen and (max-width: 1216px){body[_ngcontent-%COMP%]{overflow:scroll!important}.app-container[_ngcontent-%COMP%]{width:100vw;height:100vh;background-color:#fff!important;display:flex;justify-content:center;align-items:center;flex-wrap:wrap}.weather-container[_ngcontent-%COMP%]{display:block!important;background-color:#fff;border-radius:30px;display:flex;flex-direction:row;flex-wrap:wrap}.left-container[_ngcontent-%COMP%]{flex:3;background-color:#f6f6f8;width:100%;display:flex;flex-direction:column;flex-wrap:wrap;padding-bottom:10px;border-top-left-radius:0!important;border-bottom-left-radius:0!important}.left-container-other-details[_ngcontent-%COMP%]{flex:5!important;display:flex;flex-direction:column;justify-content:center;align-items:center}.right-container[_ngcontent-%COMP%]{flex:7;background-color:#f6f6f8;width:100%;height:100%;display:flex;flex-direction:column;flex-wrap:wrap;border-bottom-right-radius:0!important;align-items:center}.right-container-data-box[_ngcontent-%COMP%]{flex:2;display:flex;flex-direction:column;margin:10px;flex-wrap:wrap}.right-container-week-cards[_ngcontent-%COMP%]{flex:1;display:flex;flex-direction:row;justify-content:center;align-items:center;flex-wrap:wrap}.cards[_ngcontent-%COMP%]{width:95px;height:120px;text-align:center;justify-content:center;align-items:center;border-radius:10px;background-color:#fff;font-size:small;font-weight:500;margin-right:8px;margin-bottom:5px;font-weight:700}.right-container-today-highlight[_ngcontent-%COMP%]{flex:6;display:flex;flex-direction:column;flex-wrap:wrap}.right-container-today-highlight-cards[_ngcontent-%COMP%]{display:flex;flex:10;flex-direction:row;justify-content:center;align-items:center;flex-wrap:wrap}.right-container-today-highlight-card[_ngcontent-%COMP%]{display:flex;flex-direction:column;background-color:#fff;width:227px;height:190px;border-radius:10px;justify-content:center;align-items:center;text-align:center;margin:5px 8px!important}}@media only screen and (max-width: 1216px) and (max-width: 514px){.left-container-nav-bar[_ngcontent-%COMP%]{flex:2;display:flex;flex-direction:row;justify-content:center;align-items:center;flex-wrap:wrap}}.left-container[_ngcontent-%COMP%]{height:100%;width:100%;display:flex;flex-direction:column}.left-container-nav-bar[_ngcontent-%COMP%]{flex:2;display:flex;flex-direction:row;justify-content:center;align-items:center}.search-icon[_ngcontent-%COMP%]{flex:2;text-align:right;margin-right:5px}.search-icon[_ngcontent-%COMP%]   fa-icon[_ngcontent-%COMP%]{color:#387adf}.search-input[_ngcontent-%COMP%]{flex:4}.search-input[_ngcontent-%COMP%]   input[_ngcontent-%COMP%]{width:100%;border:none;outline:none;padding:5px 8px;font-size:16px;color:#000;text-align:center;background:#f3f1f1;border-radius:25px}.location-icon[_ngcontent-%COMP%]{flex:2;text-align:center;margin:-2px 10px 0 0}.location-icon[_ngcontent-%COMP%]   fa-icon[_ngcontent-%COMP%]{padding:2px 5px;background-color:#8d8d96b8;border-radius:500px;color:#387adf}.location-icon[_ngcontent-%COMP%]   fa-icon[_ngcontent-%COMP%]:hover{background-color:#9292942b;color:#5f94e3;border-radius:500px;cursor:pointer;transition:3ms ease-in-out all}.city[_ngcontent-%COMP%]{font-size:larger;font-weight:700;text-align:center}.left-container-data-box[_ngcontent-%COMP%]{flex:12;display:flex;margin:auto 30px;flex-direction:column}.left-container-temp-data[_ngcontent-%COMP%]{flex:5;display:flex;flex-direction:column;justify-content:center;align-items:center}.left-container-temp-img[_ngcontent-%COMP%]{flex:2}.left-container-temp-img[_ngcontent-%COMP%]   img[_ngcontent-%COMP%]{width:160px;height:160px}.left-container-temp-value[_ngcontent-%COMP%]{flex:1;font-size:62px;font-weight:700}.left-container-temp-value[_ngcontent-%COMP%]   sup[_ngcontent-%COMP%]{position:relative;top:2px;font-size:36px}.left-container-day-time[_ngcontent-%COMP%]{flex:1;font-weight:700;color:#000;font-size:16px}.time[_ngcontent-%COMP%]{color:#c9c9c9}.dividing-line[_ngcontent-%COMP%]{height:1px;background-color:#f5f5f5;width:100%;margin:20px auto}.left-container-other-details[_ngcontent-%COMP%]{flex:5;display:flex;flex-direction:column;justify-content:center;align-items:center}.left-container-temp-summary[_ngcontent-%COMP%]{flex:1;display:flex;flex-direction:row;font-size:small}.left-container-temp-summary-phrase-img[_ngcontent-%COMP%]{margin-right:8px}.left-container-rain-stats[_ngcontent-%COMP%]{flex:1;display:flex;flex-direction:row;font-size:small}.left-container-rain-stats-img[_ngcontent-%COMP%]{margin-right:8px}.left-container-location-details[_ngcontent-%COMP%]{flex:4;position:relative;}.left-container-location-img[_ngcontent-%COMP%]{margin-top:10px}.left-container-location-img[_ngcontent-%COMP%]   img[_ngcontent-%COMP%]{width:200px;height:138px;border-radius:20px}.left-container-location-name[_ngcontent-%COMP%]{top:18px;right:49px;font-size:medium;font-weight:700;color:#4c4c4fa6;position:absolute;}",
+        "@media only screen and (max-width: 1240px){.left-container-other-details[_ngcontent-%COMP%]{flex:5!important;display:flex;flex-direction:column;justify-content:center;align-items:center}.right-container-today-highlight-title[_ngcontent-%COMP%]{flex:2;margin-top:3px!important;margin-left:36px!important;font-size:18px;font-weight:700;padding-top:-25px}.right-container-today-cards[_ngcontent-%COMP%]{flex:1;display:flex;flex-direction:row;justify-content:center;align-items:center;flex-wrap:wrap}.right-container-nav-bar[_ngcontent-%COMP%]{flex:1;display:flex;flex-direction:row;justify-content:space-between;align-items:center;font-size:small;font-weight:700;flex-wrap:wrap;margin-top:10px}.left-container-nav-bar[_ngcontent-%COMP%]{flex:2;display:flex;flex-direction:row;justify-content:center;align-items:center;margin:30px 0!important}}@media only screen and (max-width: 1216px){body[_ngcontent-%COMP%]{overflow:scroll!important}.app-container[_ngcontent-%COMP%]{width:100vw;background-color:#fff!important;display:flex;justify-content:center;align-items:center;flex-wrap:wrap}.weather-container[_ngcontent-%COMP%]{display:block!important;background-color:#fff;border-radius:30px;display:flex;flex-direction:row;flex-wrap:wrap}.left-container[_ngcontent-%COMP%]{flex:3;background-color:#f6f6f8;width:100%;display:flex;flex-direction:column;flex-wrap:wrap;padding-bottom:10px;border-top-left-radius:0!important;border-bottom-left-radius:0!important}.left-container-other-details[_ngcontent-%COMP%]{flex:5!important;display:flex;flex-direction:column;justify-content:center;align-items:center}.right-container[_ngcontent-%COMP%]{flex:7;background-color:#f6f6f8;width:100%;height:100%;display:flex;flex-direction:column;flex-wrap:wrap;border-bottom-right-radius:0!important;align-items:center}.right-container-data-box[_ngcontent-%COMP%]{flex:2;display:flex;flex-direction:column;margin:10px;flex-wrap:wrap}.right-container-week-cards[_ngcontent-%COMP%]{flex:1;display:flex;flex-direction:row;justify-content:center;align-items:center;flex-wrap:wrap}.cards[_ngcontent-%COMP%]{width:95px;height:120px;text-align:center;justify-content:center;align-items:center;border-radius:10px;background-color:#fff;font-size:small;font-weight:500;margin-right:8px;margin-bottom:5px;font-weight:700}.right-container-today-highlight[_ngcontent-%COMP%]{flex:6;display:flex;flex-direction:column;flex-wrap:wrap}.right-container-today-highlight-cards[_ngcontent-%COMP%]{display:flex;flex:10;flex-direction:row;justify-content:center;align-items:center;flex-wrap:wrap}.right-container-today-highlight-card[_ngcontent-%COMP%]{display:flex;flex-direction:column;background-color:#fff;width:227px;height:190px;border-radius:10px;justify-content:center;align-items:center;text-align:center;margin:5px 8px!important}}@media only screen and (max-width: 1216px) and (max-width: 514px){.left-container-nav-bar[_ngcontent-%COMP%]{flex:2;display:flex;flex-direction:row;justify-content:center;align-items:center;flex-wrap:wrap}}.left-container[_ngcontent-%COMP%]{width:100%;display:flex;flex-direction:column}.left-container-nav-bar[_ngcontent-%COMP%]{flex:2;display:flex;flex-direction:row;justify-content:center;align-items:center}.search-icon[_ngcontent-%COMP%]{flex:2;text-align:right;margin-right:5px}.search-icon[_ngcontent-%COMP%]   fa-icon[_ngcontent-%COMP%]{color:#387adf}.search-input[_ngcontent-%COMP%]{flex:4}.search-input[_ngcontent-%COMP%]   input[_ngcontent-%COMP%]{width:100%;border:none;outline:none;padding:5px 8px;font-size:16px;color:#000;text-align:center;background:#f3f1f1;border-radius:25px}.location-icon[_ngcontent-%COMP%]{flex:2;text-align:center;margin:-2px 10px 0 0}.location-icon[_ngcontent-%COMP%]   fa-icon[_ngcontent-%COMP%]{padding:2px 5px;background-color:#8d8d96b8;border-radius:500px;color:#387adf}.location-icon[_ngcontent-%COMP%]   fa-icon[_ngcontent-%COMP%]:hover{background-color:#9292942b;color:#5f94e3;border-radius:500px;cursor:pointer;transition:3ms ease-in-out all}.city[_ngcontent-%COMP%]{font-size:larger;font-weight:700;text-align:center}.left-container-data-box[_ngcontent-%COMP%]{flex:12;display:flex;margin:auto 30px;flex-direction:column}.left-container-temp-data[_ngcontent-%COMP%]{flex:5;display:flex;flex-direction:column;justify-content:center;align-items:center}.left-container-temp-img[_ngcontent-%COMP%]{flex:2}.left-container-temp-img[_ngcontent-%COMP%]   img[_ngcontent-%COMP%]{width:160px;height:160px}.left-container-temp-value[_ngcontent-%COMP%]{flex:1;font-size:62px;font-weight:700}.left-container-temp-value[_ngcontent-%COMP%]   sup[_ngcontent-%COMP%]{position:relative;top:2px;font-size:36px}.left-container-day-time[_ngcontent-%COMP%]{flex:1;font-weight:700;color:#000;font-size:16px}.time[_ngcontent-%COMP%]{color:#c9c9c9}.dividing-line[_ngcontent-%COMP%]{height:1px;background-color:#f5f5f5;width:100%;margin:20px auto}.left-container-other-details[_ngcontent-%COMP%]{flex:5;display:flex;flex-direction:column;justify-content:center;align-items:center}.left-container-temp-summary[_ngcontent-%COMP%]{flex:1;display:flex;flex-direction:row;font-size:small}.left-container-temp-summary-phrase-img[_ngcontent-%COMP%]{margin-right:8px}.left-container-rain-stats[_ngcontent-%COMP%]{flex:1;display:flex;flex-direction:row;font-size:small}.left-container-rain-stats-img[_ngcontent-%COMP%]{margin-right:8px}.left-container-location-details[_ngcontent-%COMP%]{flex:4;position:relative;}.left-container-location-img[_ngcontent-%COMP%]{margin-top:10px}.left-container-location-img[_ngcontent-%COMP%]   img[_ngcontent-%COMP%]{width:200px;height:138px;border-radius:20px}.left-container-location-name[_ngcontent-%COMP%]{top:18px;right:49px;font-size:medium;font-weight:700;color:#4c4c4fa6;position:absolute;}",
       ],
     }));
   let e = t;
@@ -17613,7 +17651,7 @@ var M7 = (() => {
           z()()(),
           me(13, Cv, 3, 1, "div", 9)(14, Hv, 2, 1, "div", 10),
           v(15, "div", 11)(16, "div", 12),
-          A(17, "Today's Highlight"),
+          A(17, "Today's Highlights"),
           z(),
           v(18, "div", 13)(19, "div", 14)(20, "div", 15),
           A(21, "UV Index"),
@@ -17728,9 +17766,9 @@ var M7 = (() => {
             N(5),
             h2(" ", i.weatherService.TodaysHighlights.windStatus, " "),
             N(13),
-            h2(" ", i.weatherService.TodaysHighlights.sunrise, " AM "),
+            h2(" ", i.weatherService.TodaysHighlights.sunrise, " "),
             N(5),
-            h2(" ", i.weatherService.TodaysHighlights.sunset, " PM "),
+            h2(" ", i.weatherService.TodaysHighlights.sunset, " "),
             N(6),
             h2(" ", i.weatherService.TodaysHighlights.humidity, " "),
             N(4),
@@ -17863,7 +17901,7 @@ var y7 = (() => {
       },
       dependencies: [v7, M7, C7, f8, ve, Jt],
       styles: [
-        "@media only screen and (max-width: 1240px){.left-container-other-details[_ngcontent-%COMP%]{flex:5!important;display:flex;flex-direction:column;justify-content:center;align-items:center}.right-container-today-highlight-title[_ngcontent-%COMP%]{flex:2;margin-top:3px!important;margin-left:36px!important;font-size:18px;font-weight:700;padding-top:-25px}.right-container-today-cards[_ngcontent-%COMP%]{flex:1;display:flex;flex-direction:row;justify-content:center;align-items:center;flex-wrap:wrap}.right-container-nav-bar[_ngcontent-%COMP%]{flex:1;display:flex;flex-direction:row;justify-content:space-between;align-items:center;font-size:small;font-weight:700;flex-wrap:wrap;margin-top:10px}.left-container-nav-bar[_ngcontent-%COMP%]{flex:2;display:flex;flex-direction:row;justify-content:center;align-items:center;margin:30px 0!important}}@media only screen and (max-width: 1216px){body[_ngcontent-%COMP%]{overflow:scroll!important}.app-container[_ngcontent-%COMP%]{width:100vw;height:100vh;background-color:#fff!important;display:flex;justify-content:center;align-items:center;flex-wrap:wrap}.weather-container[_ngcontent-%COMP%]{display:block!important;background-color:#fff;border-radius:30px;display:flex;flex-direction:row;flex-wrap:wrap}.left-container[_ngcontent-%COMP%]{flex:3;background-color:#f6f6f8;width:100%;display:flex;flex-direction:column;flex-wrap:wrap;padding-bottom:10px;border-top-left-radius:0!important;border-bottom-left-radius:0!important}.left-container-other-details[_ngcontent-%COMP%]{flex:5!important;display:flex;flex-direction:column;justify-content:center;align-items:center}.right-container[_ngcontent-%COMP%]{flex:7;background-color:#f6f6f8;width:100%;height:100%;display:flex;flex-direction:column;flex-wrap:wrap;border-bottom-right-radius:0!important;align-items:center}.right-container-data-box[_ngcontent-%COMP%]{flex:2;display:flex;flex-direction:column;margin:10px;flex-wrap:wrap}.right-container-week-cards[_ngcontent-%COMP%]{flex:1;display:flex;flex-direction:row;justify-content:center;align-items:center;flex-wrap:wrap}.cards[_ngcontent-%COMP%]{width:95px;height:120px;text-align:center;justify-content:center;align-items:center;border-radius:10px;background-color:#fff;font-size:small;font-weight:500;margin-right:8px;margin-bottom:5px;font-weight:700}.right-container-today-highlight[_ngcontent-%COMP%]{flex:6;display:flex;flex-direction:column;flex-wrap:wrap}.right-container-today-highlight-cards[_ngcontent-%COMP%]{display:flex;flex:10;flex-direction:row;justify-content:center;align-items:center;flex-wrap:wrap}.right-container-today-highlight-card[_ngcontent-%COMP%]{display:flex;flex-direction:column;background-color:#fff;width:227px;height:190px;border-radius:10px;justify-content:center;align-items:center;text-align:center;margin:5px 8px!important}}@media only screen and (max-width: 1216px) and (max-width: 514px){.left-container-nav-bar[_ngcontent-%COMP%]{flex:2;display:flex;flex-direction:row;justify-content:center;align-items:center;flex-wrap:wrap}}.app-container[_ngcontent-%COMP%]{width:100vw;height:100vh;background-color:#d6d7da;display:flex;justify-content:center;align-items:center}.weather-container[_ngcontent-%COMP%]{height:85vh;width:65vw;background-color:#fff;border-radius:30px;display:flex;flex-direction:row}.left-container[_ngcontent-%COMP%]{flex:3;background-color:#f6f6f8;border-top-left-radius:30px;border-bottom-left-radius:30px}.right-container[_ngcontent-%COMP%]{flex:7;background-color:#f6f6f8;border-top-right-radius:30px;border-bottom-right-radius:30px}.loader-container[_ngcontent-%COMP%]{display:flex;justify-content:center;align-items:center}",
+        "@media only screen and (max-width: 1240px){.left-container-other-details[_ngcontent-%COMP%]{flex:5!important;display:flex;flex-direction:column;justify-content:center;align-items:center}.right-container-today-highlight-title[_ngcontent-%COMP%]{flex:2;margin-top:3px!important;margin-left:36px!important;font-size:18px;font-weight:700;padding-top:-25px}.right-container-today-cards[_ngcontent-%COMP%]{flex:1;display:flex;flex-direction:row;justify-content:center;align-items:center;flex-wrap:wrap}.right-container-nav-bar[_ngcontent-%COMP%]{flex:1;display:flex;flex-direction:row;justify-content:space-between;align-items:center;font-size:small;font-weight:700;flex-wrap:wrap;margin-top:10px}.left-container-nav-bar[_ngcontent-%COMP%]{flex:2;display:flex;flex-direction:row;justify-content:center;align-items:center;margin:30px 0!important}}@media only screen and (max-width: 1216px){body[_ngcontent-%COMP%]{overflow:scroll!important}.app-container[_ngcontent-%COMP%]{width:100vw;background-color:#fff!important;display:flex;justify-content:center;align-items:center;flex-wrap:wrap}.weather-container[_ngcontent-%COMP%]{display:block!important;background-color:#fff;border-radius:30px;display:flex;flex-direction:row;flex-wrap:wrap}.left-container[_ngcontent-%COMP%]{flex:3;background-color:#f6f6f8;width:100%;display:flex;flex-direction:column;flex-wrap:wrap;padding-bottom:10px;border-top-left-radius:0!important;border-bottom-left-radius:0!important}.left-container-other-details[_ngcontent-%COMP%]{flex:5!important;display:flex;flex-direction:column;justify-content:center;align-items:center}.right-container[_ngcontent-%COMP%]{flex:7;background-color:#f6f6f8;width:100%;height:100%;display:flex;flex-direction:column;flex-wrap:wrap;border-bottom-right-radius:0!important;align-items:center}.right-container-data-box[_ngcontent-%COMP%]{flex:2;display:flex;flex-direction:column;margin:10px;flex-wrap:wrap}.right-container-week-cards[_ngcontent-%COMP%]{flex:1;display:flex;flex-direction:row;justify-content:center;align-items:center;flex-wrap:wrap}.cards[_ngcontent-%COMP%]{width:95px;height:120px;text-align:center;justify-content:center;align-items:center;border-radius:10px;background-color:#fff;font-size:small;font-weight:500;margin-right:8px;margin-bottom:5px;font-weight:700}.right-container-today-highlight[_ngcontent-%COMP%]{flex:6;display:flex;flex-direction:column;flex-wrap:wrap}.right-container-today-highlight-cards[_ngcontent-%COMP%]{display:flex;flex:10;flex-direction:row;justify-content:center;align-items:center;flex-wrap:wrap}.right-container-today-highlight-card[_ngcontent-%COMP%]{display:flex;flex-direction:column;background-color:#fff;width:227px;height:190px;border-radius:10px;justify-content:center;align-items:center;text-align:center;margin:5px 8px!important}}@media only screen and (max-width: 1216px) and (max-width: 514px){.left-container-nav-bar[_ngcontent-%COMP%]{flex:2;display:flex;flex-direction:row;justify-content:center;align-items:center;flex-wrap:wrap}}.app-container[_ngcontent-%COMP%]{width:100vw;background-color:#d6d7da;display:flex;justify-content:center;align-items:center}.weather-container[_ngcontent-%COMP%]{width:65vw;background-color:#fff;border-radius:30px;display:flex;flex-direction:row}.left-container[_ngcontent-%COMP%]{flex:3;background-color:#f6f6f8;border-top-left-radius:30px;border-bottom-left-radius:30px}.right-container[_ngcontent-%COMP%]{flex:7;background-color:#f6f6f8;border-top-right-radius:30px;border-bottom-right-radius:30px}.loader-container[_ngcontent-%COMP%]{display:flex;justify-content:center;align-items:center}",
       ],
     }));
   let e = t;
