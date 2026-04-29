@@ -60,9 +60,8 @@ git push -u origin main
 
 ### 4. View Your App
 Once pushed to GitHub, you can:
-- View the repository: `https://github.com/YOUR_USERNAME/SersmickWeatherApp`
-- Clone it locally: `git clone https://github.com/YOUR_USERNAME/SersmickWeatherApp.git`
-
+- View the repository: `https://github.com/mafari10/SersmickWeatherApp`
+- Clone it locally: `git clone https://github.com/mafari10/SersmickWeatherApp`
 ---
 
 ## Deploying to the Web
@@ -75,33 +74,5 @@ GitHub Pages requires the repository to be public. Your app can be deployed for 
 3. Choose `main` branch and save
 4. Your app will be available at the URL provided
 
-### Option 2: Using Vercel (Recommended for Node.js apps)
-1. Sign up at [vercel.com](https://vercel.com)
-2. Click "New Project"
-3. Import your GitHub repository
-4. Vercel will auto-detect Node.js and deploy
-5. Your app will get a live URL
-
-### Option 3: Using Render
-1. Sign up at [render.com](https://render.com)
-2. Create "New Web Service"
-3. Connect your GitHub repository
-4. Set Build Command: `npm install` (if needed)
-5. Set Start Command: `node server.js`
-6. Deploy and get a live URL
-
----
-
-## Environment Variables
-- `PORT`: Change the server port (default: 4173)
-  ```bash
-  set PORT=3000
-  node server.js
-  ```
-
-## Troubleshooting
-- **Port already in use**: Change the PORT environment variable
-- **Can't connect to localhost**: Ensure server.js is running
-- **GitHub push fails**: Verify your git credentials and remote URL
 
 
