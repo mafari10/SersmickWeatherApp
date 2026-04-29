@@ -53,15 +53,15 @@ git commit -m "Initial commit - SersmickWeatherApp"
 Replace `YOUR_USERNAME` with your GitHub username:
 
 ```bash
-git remote add origin https://github.com/YOUR_USERNAME/SersmickWeatherApp.git
+git remote add origin https://github.com/mafari10/SersmickWeatherApp.git
 git branch -M main
 git push -u origin main
 ```
 
 ### 4. View Your App
 Once pushed to GitHub, you can:
-- View the repository: `https://github.com/mafari10/SersmickWeatherApp`
-- Clone it locally: `git clone https://github.com/mafari10/SersmickWeatherApp`
+- View the repository: `https://github.com/mafari10/SersmickWeatherApp.git`
+- Clone it locally: `git clone https://github.com/mafari10/SersmickWeatherApp.git`
 ---
 
 ## Deploying to the Web
